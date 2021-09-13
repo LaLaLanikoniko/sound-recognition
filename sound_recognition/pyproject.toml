@@ -1,0 +1,18 @@
+[tool.poetry]
+name = "sound_recognition"
+version = "0.1.0"
+description = ""
+authors = ["Takumi Yoshinobe"]
+
+[tool.poetry.dependencies]
+python = "3.9"
+google-cloud-speech = "^2.4.0"
+scipy = "^1.7.0"
+
+[tool.poetry.dev-dependencies]
+black = "^21.8b0"
+isort = "^5.9.3"
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
