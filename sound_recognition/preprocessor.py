@@ -1,12 +1,13 @@
-import wave
+import math
 import os
 import struct
+import wave
+
 import numpy as np
-import math
 
 
 def preprocess_wave(audio_file_path, time, wav_cut_dir):
-    with wave.open(audio_file_path, 'r') as wr:
+    with wave.open(audio_file_path, "r") as wr:
         ch = wr.getnchannels()
         width = wr.getsampwidth()
         fr = wr.getframerate()
