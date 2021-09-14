@@ -8,7 +8,6 @@ def recognize_speech(audio_files, sample_rate_hertz, audio_channel_count):
     script = ""
     last_end_time = None
     script_start_time = None
-    num_cut = len(audio_files)
     for i, audio_file in enumerate(audio_files):
         response = execute_speech_to_text(
             audio_file, sample_rate_hertz, audio_channel_count
@@ -26,30 +25,27 @@ def recognize_speech(audio_files, sample_rate_hertz, audio_channel_count):
                 if "|" in word:
                     word = word.split("|")[0]
 
-                start_time = word_info.start_time
-                end_time = word_info.end_time
+                start_time_offset = word_info.start_time
+                end_time_offset = word_info.end_time
+                delta = timedelta(seconds=i * 45)
+                start_time = start_time_offset + delta
+                end_time = end_time_offset + delta
                 if script_start_time is None:
                     script_start_time = start_time
+
                 if need_new_script(script, start_time, last_end_time):
-                    telop_data = {
-                        "script": script,
-                        "start_time": script_start_time + timedelta(seconds=i * 45),
-                        "end_time": end_time + timedelta(seconds=i * 45),
-                    }
-                    recognition_results.append(telop_data)
+                    append_telop_data(
+                        recognition_results, script, script_start_time, last_end_time
+                    )
                     script = word
                     script_start_time = start_time
                 else:
                     script += word
+
                 last_end_time = end_time
-    else:
-        script += word
-        telop_data = {
-            "script": script,
-            "start_time": script_start_time + timedelta(seconds=(num_cut - 1) * 45),
-            "end_time": end_time + timedelta(seconds=(num_cut - 1) * 45),
-        }
-        recognition_results.append(telop_data)
+
+    if script:
+        append_telop_data(recognition_results, script, script_start_time, last_end_time)
 
     return recognition_results
 
@@ -59,8 +55,17 @@ def need_new_script(script, start_time, last_end_time):
         return True
 
     if last_end_time is not None and (
-        start_time - last_end_time >= timedelta(seconds=0.5)
+        start_time - last_end_time >= timedelta(seconds=0.2)
     ):
         return True
 
     return False
+
+
+def append_telop_data(recognition_results, script, script_start_time, last_end_time):
+    telop_data = {
+        "script": script,
+        "start_time": script_start_time,
+        "end_time": last_end_time,
+    }
+    recognition_results.append(telop_data)
