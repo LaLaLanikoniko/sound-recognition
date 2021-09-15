@@ -8,6 +8,8 @@ from recognizer import recognize_speech
 from writer import write
 
 
+SEPARATED_AUDIO_FILE_TIME = 45
+
 def main():
     current_dir = os.getcwd()
     tmp_dir = os.sep.join([current_dir, "tmp"])
@@ -18,13 +20,13 @@ def main():
     os.mkdir(tmp_dir)
 
     separated_audio_file_paths, sample_rate_hertz, audio_channel_count = preprocess_wave(
-        source_audio_file_path, 45, tmp_dir
+        source_audio_file_path, SEPARATED_AUDIO_FILE_TIME, tmp_dir
     )
     while len(os.listdir(tmp_dir)) < len(separated_audio_file_paths):
         pass
 
     recognition_result = recognize_speech(
-        separated_audio_file_paths, sample_rate_hertz, audio_channel_count
+        separated_audio_file_paths, sample_rate_hertz, audio_channel_count, SEPARATED_AUDIO_FILE_TIME
     )
     shutil.rmtree(tmp_dir)
 

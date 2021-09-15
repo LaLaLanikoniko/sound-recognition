@@ -3,7 +3,7 @@ from datetime import timedelta
 from api_runner import execute_speech_to_text
 
 
-def recognize_speech(audio_files, sample_rate_hertz, audio_channel_count):
+def recognize_speech(audio_files, sample_rate_hertz, audio_channel_count, separated_audio_file_time):
     recognition_results = []
     script = ""
     last_end_time = None
@@ -27,7 +27,7 @@ def recognize_speech(audio_files, sample_rate_hertz, audio_channel_count):
 
                 start_time_offset = word_info.start_time
                 end_time_offset = word_info.end_time
-                delta = timedelta(seconds=i * 45)
+                delta = timedelta(seconds=i * separated_audio_file_time)
                 start_time = start_time_offset + delta
                 end_time = end_time_offset + delta
                 if script_start_time is None:
