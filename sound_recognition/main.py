@@ -13,7 +13,7 @@ def main():
     tmp_dir = os.sep.join([current_dir, "tmp"])
     audio_file_path = sys.argv[1]
     # init tmp folder
-    if os.path.isfile(tmp_dir):
+    if os.path.isdir(tmp_dir):
         shutil.rmtree(tmp_dir)
     os.mkdir(tmp_dir)
 
@@ -44,4 +44,5 @@ def create_srt_file_path(audio_file_path, current_dir):
     return srt_file_path
 
 
-main()
+if __name__ == "__main__":
+    main()
