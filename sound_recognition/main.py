@@ -11,25 +11,24 @@ from writer import write
 def main():
     current_dir = os.getcwd()
     tmp_dir = os.sep.join([current_dir, "tmp"])
-    audio_file_path = sys.argv[1]
+    source_audio_file_path = sys.argv[1]
     # init tmp folder
     if os.path.isdir(tmp_dir):
         shutil.rmtree(tmp_dir)
     os.mkdir(tmp_dir)
 
-    num_cut, sample_rate_hertz, audio_channel_count = preprocess_wave(
-        audio_file_path, 45, tmp_dir
+    separated_audio_file_paths, sample_rate_hertz, audio_channel_count = preprocess_wave(
+        source_audio_file_path, 45, tmp_dir
     )
-    while len(os.listdir(tmp_dir)) < num_cut:
+    while len(os.listdir(tmp_dir)) < len(separated_audio_file_paths):
         pass
 
-    audio_files = glob.glob(os.sep.join([tmp_dir, "*"]))
     recognition_result = recognize_speech(
-        audio_files, sample_rate_hertz, audio_channel_count
+        separated_audio_file_paths, sample_rate_hertz, audio_channel_count
     )
     shutil.rmtree(tmp_dir)
 
-    srt_file_path = create_srt_file_path(audio_file_path, current_dir)
+    srt_file_path = create_srt_file_path(source_audio_file_path, current_dir)
     write(recognition_result, srt_file_path)
 
 

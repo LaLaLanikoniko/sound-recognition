@@ -22,6 +22,7 @@ def preprocess_wave(audio_file_path, time, wav_cut_dir):
 
     X = np.frombuffer(data, dtype=np.int16)
 
+    audio_file_paths = []
     for i in range(num_cut):
         outf = os.sep.join([wav_cut_dir, str(i) + ".wav"])
         start_cut = int(i * frames)
@@ -35,5 +36,6 @@ def preprocess_wave(audio_file_path, time, wav_cut_dir):
             ww.setsampwidth(width)
             ww.setframerate(fr)
             ww.writeframes(outd)
+        audio_file_paths.append(outf)
 
-    return num_cut, fr, audio_channel_count
+    return audio_file_paths, fr, audio_channel_count
